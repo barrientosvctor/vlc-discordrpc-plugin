@@ -32,7 +32,7 @@
 #include <vlc_common.h>
 #include <vlc_fs.h>
 
-#define PLUGIN_FOLDER_NAME "vlcrc"
+#define PLUGIN_FOLDER_NAME "discordrpc"
 #define WIDE_IMPL(x)	   L##x
 #define WIDE(x)			   WIDE_IMPL(x)
 
@@ -43,25 +43,29 @@
 #define OS_SEPARATOR "\\"
 #endif
 
+/* This one will be concatenated when %APPDATA% env variable is found. */
 #ifndef PLUGIN_FOLDER_PATH
-#define PLUGIN_FOLDER_PATH OS_SEPARATOR PLUGIN_FOLDER_NAME
+#define PLUGIN_FOLDER_PATH OS_SEPARATOR "vlc" OS_SEPARATOR PLUGIN_FOLDER_NAME
 #endif
 
-// C:\Users\USER\AppData\Roaming\vlcrc
+/* Used as alternative when %USERPROFILE% env variable is found. */
+// %USERPROFILE%\AppData\Roaming\vlc\discordrpc
 #ifndef PLUGIN_FOLDER_PATH_ALT
 #define PLUGIN_FOLDER_PATH_ALT                                                                     \
-	OS_SEPARATOR "AppData" OS_SEPARATOR "Roaming" OS_SEPARATOR PLUGIN_FOLDER_NAME
+	OS_SEPARATOR "AppData" OS_SEPARATOR "Roaming" OS_SEPARATOR "vlc" OS_SEPARATOR PLUGIN_FOLDER_NAME
 #endif
 #else
 #ifndef OS_SEPARATOR
 #define OS_SEPARATOR "/"
 #endif
 
+/* Concatenated when $XDG_CONFIG_HOME is found. */
 #ifndef PLUGIN_FOLDER_PATH
-#define PLUGIN_FOLDER_PATH OS_SEPARATOR PLUGIN_FOLDER_NAME
+#define PLUGIN_FOLDER_PATH OS_SEPARATOR "vlc" OS_SEPARATOR PLUGIN_FOLDER_NAME
 #endif
 
-// $HOME/.config/vlc/vlcrc
+/* Used as alternative to be concatenated when $HOME env variable is found. */
+// $HOME/.config/vlc/discordrpc
 #ifndef PLUGIN_FOLDER_PATH_ALT
 #define PLUGIN_FOLDER_PATH_ALT                                                                     \
 	OS_SEPARATOR ".config" OS_SEPARATOR "vlc" OS_SEPARATOR PLUGIN_FOLDER_NAME
