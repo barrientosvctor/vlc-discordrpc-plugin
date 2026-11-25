@@ -209,6 +209,7 @@ static inline char *get_base_plugin_directory(void)
  */
 static inline wchar_t *wide_append_to_path(const wchar_t *p_path, const size_t i_length, ...)
 {
+	// TODO
 	if (!p_path || i_length == 0)
 	{
 		return NULL;
@@ -357,6 +358,7 @@ static inline char *multibyte_append_to_path(const char *p_path, const size_t i_
  */
 static inline wchar_t *wide_append_to_plugin_path(const size_t i_length, ...)
 {
+	// TODO
 	const wchar_t *p_next;
 	char		  *p_base_directory		 = get_base_plugin_directory();
 	wchar_t		  *p_wide_base_directory = NULL;
