@@ -19,10 +19,18 @@
 #ifndef PATH_H
 #define PATH_H
 
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <wchar.h>
+
+#include <vlc_common.h>
+#include <vlc_fs.h>
 
 #define PLUGIN_FOLDER_NAME "vlcrc"
 #define WIDE_IMPL(x)	   L##x
@@ -63,6 +71,56 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ * @brief Creates directories recursively.
+ *
+ * @param p_path Pointer to the first character of a null-terminated string.
+ * @return If all directories were created successfully, returns TRUE, FALSE otherwise.
+ */
+static inline bool mkdir_recursive(char *p_path)
+{
+	if (!p_path)
+		return false;
+
+	const mode_t i_permission		  = 0750;
+	const char	 sep[2]				  = OS_SEPARATOR;
+	char		*p_actual			  = p_path;
+	size_t		 i_read_substr_length = 0;
+	struct stat	 st;
+
+	while (*p_actual != '\0')
+	{
+		if (*p_actual == *sep)
+		{
+			*p_actual = '\0';
+
+			if (i_read_substr_length > 0 && vlc_stat(p_path, &st))
+			{
+				if (vlc_mkdir(p_path, i_permission))
+				{
+					*p_actual = *sep;
+					return false;
+				}
+			}
+
+			*p_actual = *sep;
+		}
+
+		i_read_substr_length++;
+		p_actual++;
+	}
+
+	if (vlc_stat(p_path, &st))
+	{
+		if (vlc_mkdir(p_path, i_permission))
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
 
 /**
  * @brief Obtain the absolute base directory where plugin directory should be depending on the
